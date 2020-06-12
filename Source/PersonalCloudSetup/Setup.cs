@@ -262,7 +262,7 @@ namespace PersonalCloudSetup
 
             project.Language = "zh-CN";
             project.LicenceFile = Path.Combine(dataFolder, "License.zh-CN.rtf");
-            string mstFile = project.BuildLanguageTransform(productMsi, project.Language, @"Localization\zh-CN.wxl");
+            string mstFile = BuildLanguageTransform(project, productMsi, project.Language, @"Localization\zh-CN.wxl");
 
             productMsi.EmbedTransform(mstFile);
             using (var database = new Database(productMsi, DatabaseOpenMode.Direct))
@@ -271,6 +271,32 @@ namespace PersonalCloudSetup
             }
 
             return productMsi;
+        }
+
+        public static string BuildLanguageTransform(Project project, string originalMsi, string language, string localizationFile = "")
+        {
+            var torch = Compiler.WixLocation.PathCombine("torch.exe");
+            var originalLng = project.Language;
+            var originalLocalizationFile = project.LocalizationFile;
+            try
+            {
+                project.Language = language;
+                project.LocalizationFile = localizationFile;
+
+                string localizedMsi = project.BuildMsi(language).PathGetFullPath();
+                string langMst = localizedMsi.PathChangeExtension(".mst");
+
+                DeleteFile(langMst);
+                System.Threading.Thread.Sleep(2000);
+
+                Run(torch, $"-p -t language \"{originalMsi}\" \"{localizedMsi}\" -out \"{langMst}\"");
+                return langMst;
+            }
+            finally
+            {
+                project.LocalizationFile = originalLocalizationFile;
+                project.Language = originalLng;
+            }
         }
 
         static void DeleteFile(string filePath)
