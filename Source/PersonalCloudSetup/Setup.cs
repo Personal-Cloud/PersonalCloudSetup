@@ -143,9 +143,6 @@ namespace PersonalCloudSetup
 
         private static string BuildMSI(Platform platform, string dataFolder, string versionStr)
         {
-            DeleteFile("zh-CN.msi".PathGetFullPath()); // Remove temp files in previous run, otherwise, torch.exe may report error.
-            DeleteFile("zh-CN.mst".PathGetFullPath());
-
             string platformString;
             string platformString2;
             if (platform == Platform.x86)
@@ -262,7 +259,7 @@ namespace PersonalCloudSetup
 
             project.Language = "zh-CN";
             project.LicenceFile = Path.Combine(dataFolder, "License.zh-CN.rtf");
-            string mstFile = BuildLanguageTransform(project, productMsi, project.Language, @"Localization\zh-CN.wxl");
+            string mstFile = BuildLanguageTransformEx(project, productMsi, project.Language, @"Localization\zh-CN.wxl", platformString);
 
             productMsi.EmbedTransform(mstFile);
             using (var database = new Database(productMsi, DatabaseOpenMode.Direct))
@@ -273,7 +270,7 @@ namespace PersonalCloudSetup
             return productMsi;
         }
 
-        public static string BuildLanguageTransform(Project project, string originalMsi, string language, string localizationFile = "")
+        public static string BuildLanguageTransformEx(Project project, string originalMsi, string language, string localizationFile, string platformString)
         {
             var torch = Compiler.WixLocation.PathCombine("torch.exe");
             var originalLng = project.Language;
@@ -283,11 +280,8 @@ namespace PersonalCloudSetup
                 project.Language = language;
                 project.LocalizationFile = localizationFile;
 
-                string localizedMsi = project.BuildMsi(language).PathGetFullPath();
+                string localizedMsi = project.BuildMsi($@"{platformString}\{language}").PathGetFullPath();
                 string langMst = localizedMsi.PathChangeExtension(".mst");
-
-                DeleteFile(langMst);
-                System.Threading.Thread.Sleep(2000);
 
                 Run(torch, $"-p -t language \"{originalMsi}\" \"{localizedMsi}\" -out \"{langMst}\"");
                 return langMst;
@@ -296,20 +290,6 @@ namespace PersonalCloudSetup
             {
                 project.LocalizationFile = originalLocalizationFile;
                 project.Language = originalLng;
-            }
-        }
-
-        static void DeleteFile(string filePath)
-        {
-            var fi = new FileInfo(filePath);
-            if (fi.Exists)
-            {
-                Console.WriteLine($"Delete {fi.FullName}");
-                fi.Delete();
-            }
-            else
-            {
-                Console.WriteLine($"Skip {fi.FullName}");
             }
         }
 
