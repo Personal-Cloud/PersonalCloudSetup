@@ -143,6 +143,9 @@ namespace PersonalCloudSetup
 
         private static string BuildMSI(Platform platform, string dataFolder, string versionStr)
         {
+            DeleteFile("zh-CN.msi".PathGetFullPath()); // Remove temp files in previous run, otherwise, torch.exe may report error.
+            DeleteFile("zh-CN.mst".PathGetFullPath());
+
             string platformString;
             string platformString2;
             if (platform == Platform.x86)
@@ -259,8 +262,6 @@ namespace PersonalCloudSetup
 
             project.Language = "zh-CN";
             project.LicenceFile = Path.Combine(dataFolder, "License.zh-CN.rtf");
-            System.IO.File.Delete((project.Language + ".msi").PathGetFullPath()); // Remove temp files, otherwise, torch.exe may report error.
-            System.IO.File.Delete((project.Language + ".mst").PathGetFullPath());
             string mstFile = project.BuildLanguageTransform(productMsi, project.Language, @"Localization\zh-CN.wxl");
 
             productMsi.EmbedTransform(mstFile);
@@ -270,6 +271,20 @@ namespace PersonalCloudSetup
             }
 
             return productMsi;
+        }
+
+        static void DeleteFile(string filePath)
+        {
+            var fi = new FileInfo(filePath);
+            if (fi.Exists)
+            {
+                Console.WriteLine($"Delete {fi.FullName}");
+                fi.Delete();
+            }
+            else
+            {
+                Console.WriteLine($"Skip {fi.FullName}");
+            }
         }
 
         static int Run(string exe, string args)
