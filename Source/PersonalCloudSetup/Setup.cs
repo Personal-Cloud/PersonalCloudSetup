@@ -259,6 +259,8 @@ namespace PersonalCloudSetup
 
             project.Language = "zh-CN";
             project.LicenceFile = Path.Combine(dataFolder, "License.zh-CN.rtf");
+            System.IO.File.Delete((project.Language + ".msi").PathGetFullPath()); // Remove temp files, otherwise, torch.exe may report error.
+            System.IO.File.Delete((project.Language + ".mst").PathGetFullPath());
             string mstFile = project.BuildLanguageTransform(productMsi, project.Language, @"Localization\zh-CN.wxl");
 
             productMsi.EmbedTransform(mstFile);
