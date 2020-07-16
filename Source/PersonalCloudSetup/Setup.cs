@@ -166,7 +166,7 @@ namespace PersonalCloudSetup
 
                 new Project("!(loc.PersonalCloudFolderName)",
 
-                    new Dir(@"%ProgramFiles%\Personal Cloud",
+                    new Dir($@"%ProgramFiles%\Personal Cloud {versionStr}",
 
                         new Dir("Service",
 
@@ -210,6 +210,12 @@ namespace PersonalCloudSetup
 
             project.GUID = new Guid("B8B67678-128E-47D8-BE23-90132BCF220F");
             project.UpgradeCode = new Guid("B8B67678-128E-47D8-BE23-90132BCF1058");
+
+            project.MajorUpgrade = new MajorUpgrade
+            {
+                Schedule = UpgradeSchedule.afterInstallInitialize,
+                DowngradeErrorMessage = "A later version of [ProductName] is already installed. Setup will now exit."
+            };
 
             project.Platform = platform;
 
