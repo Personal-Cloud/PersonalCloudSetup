@@ -69,7 +69,7 @@ public class BA : BootstrapperApplication
         var launchAction = this.Command.Action;
         if (launchAction == LaunchAction.Install && packageState == PackageState.Present)
         {
-            MessageBox.Show("Personal Cloud is already installed");
+            MessageBox.Show("Personal House is already installed");
             Engine.Quit(0);
             return;
         }

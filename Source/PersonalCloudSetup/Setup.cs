@@ -160,13 +160,13 @@ namespace PersonalCloudSetup
                 throw new NotSupportedException("Unsupported Platform");
             }
 
-            string outputFilename = $"PersonalCloud-{versionStr}-{platformString}";
+            string outputFilename = $"PersonalHouse-{versionStr}-{platformString}";
 
             var project =
 
                 new Project("!(loc.PersonalCloudFolderName)",
 
-                    new Dir($@"%ProgramFiles%\Personal Cloud {versionStr}",
+                    new Dir($@"%ProgramFiles%\Personal House {versionStr}",
 
                         new Dir("Service",
 
@@ -229,12 +229,12 @@ namespace PersonalCloudSetup
 
             var personalCloudServiceExeFile = project.AllFiles.Single(f => f.Name.EndsWith("PersonalCloud.WindowsService.exe"));
 
-            personalCloudServiceExeFile.Add(new FirewallException { Name = "Personal Cloud Service", Scope = FirewallExceptionScope.any });
+            personalCloudServiceExeFile.Add(new FirewallException { Name = "Personal House Service", Scope = FirewallExceptionScope.any });
 
             personalCloudServiceExeFile.ServiceInstaller = new ServiceInstaller
             {
-                Name = "PersonalCloud.WindowsService",
-                DisplayName = "Personal Cloud Service",
+                Name = "PersonalHouse.WindowsService",
+                DisplayName = "Personal House Service",
                 StartOn = SvcEvent.Install,
                 StopOn = SvcEvent.InstallUninstall_Wait,
                 RemoveOn = SvcEvent.Uninstall_Wait,
@@ -331,7 +331,7 @@ namespace PersonalCloudSetup
         private static void BuildBundle(Platform platform, string dataFolder, string msiFile)
         {
             var bootstrapper =
-                new Bundle("Personal Cloud",
+                new Bundle("Personal House",
                     new PackageGroupRef("NetFx40Web"),
                     new ExePackage(Path.Combine(dataFolder, "DokanSetup_redist.exe"))
                     {
