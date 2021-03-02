@@ -25,7 +25,7 @@ jobs:
           dotnet-version: 3.1.202
 
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.0.0
+        uses: microsoft/setup-msbuild@v1.0.2
 
       - name: Setup Wix Toolset
         run: |
@@ -38,8 +38,8 @@ jobs:
 
       - name: Download ffmpeg
         run: |
-            Invoke-WebRequest https://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-4.2.3-win32-static.zip -Out .\ffmpeg-4.2.3-win32-static.zip
-            Invoke-WebRequest https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-4.2.3-win64-static.zip -Out .\ffmpeg-4.2.3-win64-static.zip
+            Invoke-WebRequest https://archive.org/download/zeranoe/win32/static/ffmpeg-4.2.3-win32-static.zip -Out .\ffmpeg-4.2.3-win32-static.zip
+            Invoke-WebRequest https://archive.org/download/zeranoe/win64/static/ffmpeg-4.2.3-win64-static.zip -Out .\ffmpeg-4.2.3-win64-static.zip
 
       - name: Extract ffmpeg
         run: |
