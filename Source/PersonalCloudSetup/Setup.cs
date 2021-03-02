@@ -233,7 +233,7 @@ namespace PersonalCloudSetup
 
             personalCloudServiceExeFile.ServiceInstaller = new ServiceInstaller
             {
-                Name = "PersonalHouse.WindowsService",
+                Name = "PersonalCloud.WindowsService",
                 DisplayName = "Personal House Service",
                 StartOn = SvcEvent.Install,
                 StopOn = SvcEvent.InstallUninstall_Wait,
